@@ -13,8 +13,7 @@ public interface ExamMapper {
             "WHERE NOT EXISTS ( " +
             "SELECT 1 " +
             "FROM first_score " +
-            "WHERE user_id = #{userId} and subject_id = #{subjectId} " +
-            ") ")
+            "WHERE user_id = #{userId} and subject_id = #{subjectId}) ")
     public int recordFirstScore(@Param("userId") Long userId,
                                 @Param("score") int score,
                                 @Param("subjectId") int subjectId);
