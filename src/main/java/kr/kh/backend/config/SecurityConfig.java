@@ -35,7 +35,7 @@ public class SecurityConfig {
 
     private final CustomUserDetailsService customUserDetailsService;
     private final JwtTokenProvider jwtTokenProvider;
-    private final Oauth2UserService oauth2UserService;
+//    private final Oauth2UserService oauth2UserService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, HttpSession httpSession) throws Exception {
@@ -59,7 +59,7 @@ public class SecurityConfig {
                  * 토큰이 유효한지 검사하고 유효하다면 인증 객체 (Authentication) 를 가져와서 Security Context 에 저장한다.
                  * (요청을 처리하는 동안 인증 정보를 유지하기 위함)
                  */
-                .addFilterBefore(new JwtAuthFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtAuthFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 
 //                .formLogin(
 //                        httpSecurityFormLoginConfigurer -> httpSecurityFormLoginConfigurer
@@ -72,15 +72,15 @@ public class SecurityConfig {
                  * 스프링 시큐리티에서는 oauth2 제공자 (네이버, 깃허브) 로부터 사용자의 로그인 정보를 자동으로 받아온다.
                  * 받아온 사용자 정보는 oauth2UserService 에서 작업한다.
                  */
-                .oauth2Login(
-                        httpSecurityOAuth2LoginConfigurer -> httpSecurityOAuth2LoginConfigurer
-                                .successHandler(oauth2LoginSuccessHandler())
-                                .failureHandler(oauth2LoginFailureHandler())
-                                .userInfoEndpoint(
-                                        userInfoEndpointConfig -> userInfoEndpointConfig
-                                                .userService(oauth2UserService)
-                                )
-                );
+//                .oauth2Login(
+//                        httpSecurityOAuth2LoginConfigurer -> httpSecurityOAuth2LoginConfigurer
+//                                .successHandler(oauth2LoginSuccessHandler())
+//                                .failureHandler(oauth2LoginFailureHandler())
+//                                .userInfoEndpoint(
+//                                        userInfoEndpointConfig -> userInfoEndpointConfig
+//                                                .userService(oauth2UserService)
+//                                )
+//                );
 
         return http.build();
     }
@@ -107,15 +107,15 @@ public class SecurityConfig {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
-    @Bean
-    public Oauth2LoginSuccessHandler oauth2LoginSuccessHandler() {
-        return new Oauth2LoginSuccessHandler(jwtTokenProvider);
-    }
-
-    @Bean
-    public Oauth2LoginFailureHandler oauth2LoginFailureHandler() {
-        return new Oauth2LoginFailureHandler();
-    }
+//    @Bean
+//    public Oauth2LoginSuccessHandler oauth2LoginSuccessHandler() {
+//        return new Oauth2LoginSuccessHandler(jwtTokenProvider);
+//    }
+//
+//    @Bean
+//    public Oauth2LoginFailureHandler oauth2LoginFailureHandler() {
+//        return new Oauth2LoginFailureHandler();
+//    }
 
     // 커스텀한 UserDetailsService 를 스프링에서 인식하도록 AuthenticationManager 에 등록한다.
     @Bean

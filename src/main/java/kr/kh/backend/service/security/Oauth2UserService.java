@@ -34,11 +34,11 @@ public class Oauth2UserService extends DefaultOAuth2UserService {
 
     private final UserMapper userMapper;
 
-    @Value("${spring.security.oauth2.client.registration.naver.client-id}")
-    private String naverClientId;
-
-    @Value("${spring.security.oauth2.client.registration.naver.client-secret}")
-    private String naverClientSecret;
+//    @Value("${spring.security.oauth2.client.registration.naver.client-id}")
+//    private String naverClientId;
+//
+//    @Value("${spring.security.oauth2.client.registration.naver.client-secret}")
+//    private String naverClientSecret;
 
     @Value("${github.client-id}")
     private String githubClientId;
@@ -50,60 +50,60 @@ public class Oauth2UserService extends DefaultOAuth2UserService {
      * 네이버 로그인
      * 로그인한 사용자 정보가 디비에 있는지 확인 후 유저 정보 리턴.
      */
-    public Authentication getNaverUser(String code, String state) {
-        log.info("네이버 로그인 서비스");
-        RestTemplate restTemplate = new RestTemplate();
-
-        // 리액트에서 받은 인가 코드로 접근 코드 획득
-        String getTokenUrl = "https://nid.naver.com/oauth2.0/token?grant_type=authorization_code"
-                + "&client_id=" + naverClientId + "&client_secret=" + naverClientSecret
-                + "&code=" + code + "&state=" + state;
-        Map<String, String> naverToken = restTemplate.getForObject(getTokenUrl, Map.class);
-        String naverAccessToken = naverToken.get("access_token");
-
-        // 접근 코드로 사용자의 로그인 정보 획득
-        String getUserUrl = "https://openapi.naver.com/v1/nid/me";
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + naverAccessToken);
-        HttpEntity<String> request = new HttpEntity<>(null, headers);
-        ResponseEntity<Map> naverResponse = restTemplate.exchange(getUserUrl, HttpMethod.GET, request, Map.class);
-        Map<String, String> naverUser = (Map) naverResponse.getBody().get("response");
-
-        // 네이버 사용자 정보가 디비에 있는지 확인
-        if(naverUser != null) {
-            String username = naverUser.get("nickname");
-            String email = naverUser.get("email");
-            String role = "USER";
-
-            User user = userMapper.findByEmail(email);
-
-            if(user == null) {
-                user = User.builder()
-                        .nickname(username)
-                        .email(email)
-                        .platform("naver")
-                        .roles(role)
-                        .build();
-                userMapper.insertOauthUser(user);
-                log.info("새로운 oauth2 유저를 등록했습니다 : {}", user);
-            }
-
-            if (user != null && user.getPlatform() == null) {
-                log.info("이미 등록된 이메일입니다.");
-                throw new CustomException("이미 등록된 이메일입니다.", "ERROR CODE 401", HttpStatus.UNAUTHORIZED);
-            }
-
-            Authentication authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            log.info("oauth2 유저가 인증되었습니다 = {}", authentication);
-
-            return authentication;
-
-        } else {
-            log.info("네이버 사용자의 정보를 확인할 수 없습니다.");
-            return null;
-        }
-    }
+//    public Authentication getNaverUser(String code, String state) {
+//        log.info("네이버 로그인 서비스");
+//        RestTemplate restTemplate = new RestTemplate();
+//
+//        // 리액트에서 받은 인가 코드로 접근 코드 획득
+//        String getTokenUrl = "https://nid.naver.com/oauth2.0/token?grant_type=authorization_code"
+//                + "&client_id=" + naverClientId + "&client_secret=" + naverClientSecret
+//                + "&code=" + code + "&state=" + state;
+//        Map<String, String> naverToken = restTemplate.getForObject(getTokenUrl, Map.class);
+//        String naverAccessToken = naverToken.get("access_token");
+//
+//        // 접근 코드로 사용자의 로그인 정보 획득
+//        String getUserUrl = "https://openapi.naver.com/v1/nid/me";
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.set("Authorization", "Bearer " + naverAccessToken);
+//        HttpEntity<String> request = new HttpEntity<>(null, headers);
+//        ResponseEntity<Map> naverResponse = restTemplate.exchange(getUserUrl, HttpMethod.GET, request, Map.class);
+//        Map<String, String> naverUser = (Map) naverResponse.getBody().get("response");
+//
+//        // 네이버 사용자 정보가 디비에 있는지 확인
+//        if(naverUser != null) {
+//            String username = naverUser.get("nickname");
+//            String email = naverUser.get("email");
+//            String role = "USER";
+//
+//            User user = userMapper.findByEmail(email);
+//
+//            if(user == null) {
+//                user = User.builder()
+//                        .nickname(username)
+//                        .email(email)
+//                        .platform("naver")
+//                        .roles(role)
+//                        .build();
+//                userMapper.insertOauthUser(user);
+//                log.info("새로운 oauth2 유저를 등록했습니다 : {}", user);
+//            }
+//
+//            if (user != null && user.getPlatform() == null) {
+//                log.info("이미 등록된 이메일입니다.");
+//                throw new CustomException("이미 등록된 이메일입니다.", "ERROR CODE 401", HttpStatus.UNAUTHORIZED);
+//            }
+//
+//            Authentication authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+//            SecurityContextHolder.getContext().setAuthentication(authentication);
+//            log.info("oauth2 유저가 인증되었습니다 = {}", authentication);
+//
+//            return authentication;
+//
+//        } else {
+//            log.info("네이버 사용자의 정보를 확인할 수 없습니다.");
+//            return null;
+//        }
+//    }
 
     /**
      * 깃허브 로그인
