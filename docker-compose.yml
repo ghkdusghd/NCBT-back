@@ -12,8 +12,10 @@ services:
       - mysql-data:/var/lib/mysql
 
   spring-app:
-    build: .  # Dockerfile 경로
-    container_name: spring-app
+    build:
+      - context: .
+      - dockerfile: Dockerfile
+    container_name: spring-container
     depends_on:
       - mysql
     environment:
