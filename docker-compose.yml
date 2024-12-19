@@ -9,16 +9,14 @@ services:
     ports:
       - "3306:3306"
     networks:
-      - my-network
+      - ncbt-network
 
   backend:
     image: backend
-    build:
-      - context: .
-      - dockerfile: Dockerfile
     container_name: spring-container
     depends_on:
       - mysql
+    entrypoint: ["./wait-for-it.sh", "mysql:3306", "--", "java", "-jar", "/app/app.jar"]
     environment:
       SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
       SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
@@ -26,11 +24,11 @@ services:
     ports:
       - "8080:8080"
     networks:
-      - my-network
+      - ncbt-network
 
 volumes:
   mysql-data:
 
 networks:
-  my-network:
+  ncbt-network:
     driver: bridge
