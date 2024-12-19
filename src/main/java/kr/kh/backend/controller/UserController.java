@@ -188,33 +188,33 @@ public class UserController {
 
 
     // 네이버 로그인
-    @PostMapping("/login/naver")
-    public ResponseEntity<?> loginNaver(@RequestBody OauthLoginDTO oauthLoginDTO, HttpServletResponse response) {
-        log.info("네이버 로그인 컨트롤러");
-
-        // 네이버에서 사용자 정보 조회
-        Authentication authentication = oauth2UserService.getNaverUser(oauthLoginDTO.getCode(), oauthLoginDTO.getState());
-        if(authentication == null) {
-            return ResponseEntity.status(400).build();
-        }
-
-        // JWT 토큰 생성
-        JwtToken jwtToken = jwtTokenProvider.generateToken(authentication);
-
-        // HttpOnly 쿠키에 리프레시 토큰 넣어서 전송
-        Cookie refreshCookie = new Cookie("refreshToken", jwtToken.getRefreshToken());
-        refreshCookie.setHttpOnly(true);
-        refreshCookie.setMaxAge(24 * 60 * 60);
-        refreshCookie.setSecure(false);
-        refreshCookie.setPath("/");
-        response.addCookie(refreshCookie);
-
-        return ResponseEntity.ok()
-                .header("Authorization", "Bearer " + jwtToken.getAccessToken())
-                .header("Set-Cookie", "refreshToken=" + jwtToken.getRefreshToken()
-                        + "; Path=/; HttpOnly; Max-Age=86400; SameSite=Lax" )
-                .build();
-    }
+//    @PostMapping("/login/naver")
+//    public ResponseEntity<?> loginNaver(@RequestBody OauthLoginDTO oauthLoginDTO, HttpServletResponse response) {
+//        log.info("네이버 로그인 컨트롤러");
+//
+//        // 네이버에서 사용자 정보 조회
+//        Authentication authentication = oauth2UserService.getNaverUser(oauthLoginDTO.getCode(), oauthLoginDTO.getState());
+//        if(authentication == null) {
+//            return ResponseEntity.status(400).build();
+//        }
+//
+//        // JWT 토큰 생성
+//        JwtToken jwtToken = jwtTokenProvider.generateToken(authentication);
+//
+//        // HttpOnly 쿠키에 리프레시 토큰 넣어서 전송
+//        Cookie refreshCookie = new Cookie("refreshToken", jwtToken.getRefreshToken());
+//        refreshCookie.setHttpOnly(true);
+//        refreshCookie.setMaxAge(24 * 60 * 60);
+//        refreshCookie.setSecure(false);
+//        refreshCookie.setPath("/");
+//        response.addCookie(refreshCookie);
+//
+//        return ResponseEntity.ok()
+//                .header("Authorization", "Bearer " + jwtToken.getAccessToken())
+//                .header("Set-Cookie", "refreshToken=" + jwtToken.getRefreshToken()
+//                        + "; Path=/; HttpOnly; Max-Age=86400; SameSite=Lax" )
+//                .build();
+//    }
 
     // 깃허브 로그인
     @PostMapping("/login/github")

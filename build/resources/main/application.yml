@@ -34,6 +34,7 @@ spring:
               - name
               - email
             client-name: Naver
+            provider: naver
         provider:
           naver:
             authorization_uri: https://nid.naver.com/oauth2.0/authorize
